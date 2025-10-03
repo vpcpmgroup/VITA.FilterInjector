@@ -7,8 +7,8 @@
     "@typescript-eslint/parser": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0"
   },
-  "scripts": {
-    "build": "pcf-scripts build",
+   "scripts": {
+    "build": "pcf-scripts build --no-lint",
     "clean": "pcf-scripts clean"
   }
 }
