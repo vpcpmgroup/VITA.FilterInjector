@@ -1,0 +1,58 @@
+name: Build VITA Filter Injector
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dev deps (PCF)
+        working-directory: ./VITAFilterInjector
+        run: npm ci
+
+      - name: Build PCF
+        working-directory: ./VITAFilterInjector
+        env:
+          ESLINT_USE_FLAT_CONFIG: "false"
+        run: npm run build
+
+      - name: Install PAC (robust)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.48.2
+          echo "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          pac help
+
+      - name: Init solution (clean)
+        shell: pwsh
+        run: |
+          if (Test-Path solution) { Remove-Item -Recurse -Force solution }
+          mkdir solution
+          cd solution
+          pac solution init --publisher-name VITA --publisher-prefix vp
+
+      - name: Add PCF reference
+        run: pac solution add-reference --path ./VITAFilterInjector
+
+      - name: Pack unmanaged solution
+        run: |
+          mkdir artifacts
+          pac solution pack --zipfile artifacts/VITA.FilterInjector_unmanaged.zip --folder ./solution --packagetype Unmanaged
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VITA.FilterInjector_unmanaged
+          path: artifacts/VITA.FilterInjector_unmanaged.zip
