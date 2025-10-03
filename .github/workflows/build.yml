@@ -64,7 +64,7 @@ jobs:
           }
 
           if (-not $pacCmd) { throw "PAC not found after all strategies." }
-          & $pacCmd --help
+          & $pacCmd help
 
 
 
@@ -82,5 +82,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VITA.FilterInjector_managed
-          path: artifacts/VITA.FilterInjector_managed.zip
+          name: VITA.FilterInjector_unmanaged
+          path: artifacts/VITA.FilterInjector_unmanaged.zip
