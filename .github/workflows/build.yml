@@ -22,35 +22,50 @@ jobs:
       - name: Build PCF
         run: npm run build
 
-      - name: Install PAC (MSI with winget fallback)
+      - name: Install PAC (robust)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $log = "$env:RUNNER_TEMP\pac_install.log"
-          $msi = "$env:RUNNER_TEMP\PowerAppsCLI.msi"
+          function Add-ToPath([string]$p) {
+            if (Test-Path $p) { echo $p | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append }
+          }
 
+          # 1) dotnet global tool
           try {
-            Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -OutFile $msi
-            Start-Process msiexec.exe -Wait -ArgumentList "/i `"$msi`" /qn /norestart /l*v `"$log`""
+            dotnet --info
+            dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.48.2
           } catch {
-            Write-Host "MSI download/start failed: $($_.Exception.Message)"
+            Write-Host "dotnet tool install failed: $($_.Exception.Message)"
+          }
+          Add-ToPath "$env:USERPROFILE\.dotnet\tools"
+          $pacCmd = (Get-Command pac.exe -ErrorAction SilentlyContinue).Path
+
+          # 2) MSI fallback if not found
+          if (-not $pacCmd) {
+            Write-Host "PAC not found after dotnet tool. Trying MSI…"
+            $msi = "$env:RUNNER_TEMP\PowerAppsCLI.msi"
+            Invoke-WebRequest -Uri "https://aka.ms/PowerAppsCLI" -OutFile $msi
+            Start-Process msiexec.exe -Wait -ArgumentList "/i `"$msi`" /qn /norestart"
+            $cands = @(
+              "C:\Program Files\Microsoft Power Apps CLI\tools\pac",
+              "C:\Program Files (x86)\Microsoft Power Apps CLI\tools\pac",
+              "C:\Program Files\Microsoft Power Apps CLI",
+              "C:\Program Files (x86)\Microsoft Power Apps CLI"
+            )
+            foreach ($c in $cands) { if (Test-Path "$c\pac.exe") { Add-ToPath $c } }
+            $pacCmd = (Get-Command pac.exe -ErrorAction SilentlyContinue).Path
           }
 
-          # Try to locate pac after MSI
-          $pac = "C:\Program Files\Microsoft Power Apps CLI\tools\pac\pac.exe"
-          if (-not (Test-Path $pac)) {
-            Write-Host "PAC not found after MSI. Dumping last 200 lines of log (if exists)..."
-            if (Test-Path $log) { Get-Content $log -Tail 200 | Write-Host }
-            Write-Host "Falling back to winget…"
-            winget install --id Microsoft.PowerApps.CLI -e --accept-source-agreements --accept-package-agreements
-            $pac = (Get-Command pac.exe -ErrorAction SilentlyContinue).Path
+          # 3) Last-resort search
+          if (-not $pacCmd) {
+            $found = Get-ChildItem -Path 'C:\' -Recurse -Filter pac.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($found) { Add-ToPath (Split-Path $found.FullName) }
+            $pacCmd = (Get-Command pac.exe -ErrorAction SilentlyContinue).Path
           }
 
-          if (-not (Test-Path $pac)) { throw "PAC still not found after MSI and winget." }
+          if (-not $pacCmd) { throw "PAC not found after all strategies." }
+          & $pacCmd --help
 
-          $dir = Split-Path $pac
-          echo $dir | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          & $pac --help
 
 
       - name: Init solution
