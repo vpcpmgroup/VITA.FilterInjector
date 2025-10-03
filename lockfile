@@ -1,0 +1,2 @@
+cd VITAFilterInjector
+npm install --package-lock-only
