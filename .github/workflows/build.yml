@@ -1,26 +1,47 @@
 name: Build VITA Filter Injector
-on: { push: { branches: [ main ] }, workflow_dispatch: {} }
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '18' }
-      - run: npm ci
-      - run: npm run build
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dev deps
+        run: npm install
+
+      - name: Build PCF
+        run: npm run build
+
       - name: Install PAC (preview)
         shell: pwsh
         run: |
           dotnet tool install --global Microsoft.PowerApps.CLI.Tool --prerelease
           echo "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           pac --help
-      - run: |
+
+      - name: Init solution
+        run: |
           mkdir artifacts
           pac solution init --publisher-name VITA --publisher-prefix vp
-      - run: pac solution add-reference --path .
-      - run: pac solution pack --zipFilePath artifacts/VITA.FilterInjector_managed.zip --processUnmanaged false
-      - uses: actions/upload-artifact@v4
+
+      - name: Add PCF reference
+        run: pac solution add-reference --path .
+
+      - name: Pack managed solution
+        run: pac solution pack --zipFilePath artifacts/VITA.FilterInjector_managed.zip --processUnmanaged false
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: VITA.FilterInjector_managed
           path: artifacts/VITA.FilterInjector_managed.zip
