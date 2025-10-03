@@ -67,17 +67,21 @@ jobs:
           & $pacCmd help
 
 
-
-      - name: Init solution
+      - name: Init solution (in subfolder)
+        shell: pwsh
         run: |
-          mkdir artifacts
-          pac solution init --publisher-name VITA --publisher-prefix vp
+          if (Test-Path solution) { Remove-Item -Recurse -Force solution }
+          mkdir artifacts | Out-Null
+          pac solution init --publisher-name VITA --publisher-prefix vp --outputDirectory solution
 
       - name: Add PCF reference
-        run: pac solution add-reference --path VITA.FilterInjector.pcfproj
-      
+        working-directory: solution
+        run: pac solution add-reference --path ../VITA.FilterInjector.pcfproj
+
       - name: Pack unmanaged solution
-        run: pac solution pack --zipFilePath artifacts/VITA.FilterInjector_unmanaged.zip --processUnmanaged true
+        working-directory: solution
+        run: pac solution pack --zipFilePath ../artifacts/VITA.FilterInjector_unmanaged.zip --processUnmanaged true
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
