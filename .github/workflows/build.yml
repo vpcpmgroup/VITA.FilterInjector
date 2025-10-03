@@ -16,10 +16,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+          
       - name: Install dev deps (PCF)
         working-directory: ./VITAFilterInjector
-        run: npm ci
+        run: npm install --no-audit --no-fund
+
 
       - name: Build PCF
         working-directory: ./VITAFilterInjector
