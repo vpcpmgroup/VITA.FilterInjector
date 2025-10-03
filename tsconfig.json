@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "ES6",
+    "lib": ["dom","es2015","es5"],
+    "strict": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "outDir": "out",
+    "types": ["powerapps-component-framework"]
+  },
+  "include": ["VITAFilterInjector"]
+}
