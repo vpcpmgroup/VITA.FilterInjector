@@ -74,7 +74,7 @@ jobs:
           pac solution init --publisher-name VITA --publisher-prefix vp
 
       - name: Add PCF reference
-        run: pac solution add-reference --path .
+        run: pac solution add-reference --path VITA.FilterInjector.pcfproj
       
       - name: Pack unmanaged solution
         run: pac solution pack --zipFilePath artifacts/VITA.FilterInjector_unmanaged.zip --processUnmanaged true
