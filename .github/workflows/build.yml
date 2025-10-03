@@ -76,11 +76,23 @@ jobs:
 
       - name: Add PCF reference
         working-directory: solution
-        run: pac solution add-reference --path ../VITA.FilterInjector.pcfproj
+        run: pac solution add-reference --path ../VITAFilterInjector
+        
+      - name: Inspect solution/src
+        working-directory: solution
+        shell: pwsh
+        run: |
+          Write-Host "=== TREE: solution/src ==="
+          gci -r src | ft -a
+          Write-Host "`n=== SOLUTION.XML HEAD ==="
+          Get-Content src/solution.xml -TotalCount 80 | Write-Host
+          Write-Host "`n=== CUSTOMIZATIONS.XML HEAD ==="
+          Get-Content src/Other/Customizations.xml -TotalCount 80 | Write-Host
         
       - name: Pack unmanaged solution
         working-directory: solution
         run: pac solution pack --zipfile ../artifacts/VITA.FilterInjector_unmanaged.zip --folder ./src --packagetype Unmanaged
+
       
 
       - name: Upload artifact
