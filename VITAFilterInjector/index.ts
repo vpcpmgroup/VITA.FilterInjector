@@ -38,8 +38,8 @@ export class VITAFilterInjector implements ComponentFramework.StandardControl<II
     if (!payload?.values?.length) { if (debug) this.log("empty payload"); return; }
 
     if (debug) {
-      this.log(entity=${entity} mode=${payload.mode} field=${payload.field} count=${payload.values.length} cap=${payload.capApplied});
-      this.log(values=${payload.values.join(",")});
+      this.log(`entity=${entity} mode=${payload.mode} field=${payload.field} count=${payload.values.length} cap=${payload.capApplied}`);
+      this.log(`values=${payload.values.join(",")}`);
     }
 
     const grid: any = this.findGridControl();
@@ -59,7 +59,7 @@ export class VITAFilterInjector implements ComponentFramework.StandardControl<II
         if (debug) this.log("no change");
       }
     } catch (e: any) {
-      if (debug) this.log(inject error: ${e?.message || e});
+      if (debug) this.log(`inject error: ${e?.message || e}`);
     }
   }
 
@@ -69,7 +69,7 @@ export class VITAFilterInjector implements ComponentFramework.StandardControl<II
     const webApi = (this.context as any).webAPI as ComponentFramework.WebApi;
     const res = await webApi.retrieveMultipleRecords(
       "environmentvariabledefinition",
-      ?$select=schemaname,defaultvalue&$filter=schemaname eq '${schema}'&$expand=environmentvariabledefinition_environmentvariablevalue($select=value)
+      `?$select=schemaname,defaultvalue&$filter=schemaname eq '${schema}'&$expand=environmentvariabledefinition_environmentvariablevalue($select=value)`
     );
     if (!res.entities?.length) return false;
 
@@ -105,7 +105,7 @@ export class VITAFilterInjector implements ComponentFramework.StandardControl<II
     } else {
       // fallback for older runtimes
       resp = await webApi.retrieveMultipleRecords(
-        vita_GetViewFilterSet(EntityLogicalName='${encodeURIComponent(entity)}'),
+        `vita_GetViewFilterSet(EntityLogicalName='${encodeURIComponent(entity)}')`,
         ""
       );
     }
@@ -211,6 +211,6 @@ export class VITAFilterInjector implements ComponentFramework.StandardControl<II
   }
 
   private log(m: string): void {
-    try { console.log([VITA-PCF] ${m}); } catch { /* ignore */ }
+    try { console.log(`[VITA-PCF] ${m}`); } catch { /* ignore */ }
   }
 }
