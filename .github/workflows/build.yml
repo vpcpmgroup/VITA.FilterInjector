@@ -44,9 +44,9 @@ jobs:
 
       - name: Add PCF reference
         run: pac solution add-reference --path .
-
-      - name: Pack managed solution
-        run: pac solution pack --zipFilePath artifacts/VITA.FilterInjector_managed.zip --processUnmanaged false
+      
+      - name: Pack unmanaged solution
+        run: pac solution pack --zipFilePath artifacts/VITA.FilterInjector_unmanaged.zip --processUnmanaged true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
