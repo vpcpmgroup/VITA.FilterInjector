@@ -1,17 +1,28 @@
-<Project Sdk="Microsoft.PowerApps.MSBuild.Sdk/2.0.7">
+<Project Sdk="Microsoft.PowerApps.MSBuild.Sdk/2.0.15">
+
   <PropertyGroup>
+    <!-- These must match your ControlManifest.Input.xml -->
     <ControlNamespace>VITA</ControlNamespace>
     <ControlName>VITAFilterInjector</ControlName>
-    <pcfprojGuid>{7A7F0E2C-1E8B-4C2C-95D7-6D4E3C7F9B9F}</pcfprojGuid>
+
+    <!-- Optional, but helps PAC -->
+    <AssemblyName>VITAFilterInjector</AssemblyName>
+    <RootNamespace>VITA</RootNamespace>
+    <ProjectGuid>{7A7F0E2C-1E8B-4C2C-95D7-6D4E3C7F9B9F}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Control manifest -->
     <ControlManifest Include="VITAFilterInjector/ControlManifest.Input.xml" />
-    <TypeScriptSource Include="VITAFilterInjector/index.ts" />
-    <!-- Optional globs, harmless if folders don't exist -->
-    <Resx Include="VITAFilterInjector/strings/*.resx" />
+    <ControlManifestInputXml Include="VITAFilterInjector/ControlManifest.Input.xml" />
+
+    <!-- TS/Resx/Css assets (globs are fine even if folders don’t exist) -->
+    <TypeScriptSource Include="VITAFilterInjector/**/*.ts" />
+    <Resx Include="VITAFilterInjector/strings/**/*.resx" />
     <Css Include="VITAFilterInjector/css/**/*.*" />
     <Image Include="VITAFilterInjector/img/**/*.*" />
     <Html Include="VITAFilterInjector/**/*.html" />
   </ItemGroup>
+
 </Project>
