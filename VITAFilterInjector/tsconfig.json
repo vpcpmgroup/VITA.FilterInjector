@@ -1,16 +1,9 @@
 {
+  "extends": "./node_modules/pcf-scripts/tsconfig_base.json",
   "compilerOptions": {
-    "target": "es5",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["es2017", "dom"],
-    "strict": true,
-    "noImplicitAny": false,
-    "experimentalDecorators": true,
-    "sourceMap": true,
-    "declaration": false,
-    "outDir": "out",
-    "types": ["powerapps-component-framework"]
+    "outDir": "out/controls",
+    "rootDir": ".",
+    "skipLibCheck": true
   },
-  "include": ["VITAFilterInjector/**/*.ts"]
+  "include": ["./**/*.ts"]
 }
