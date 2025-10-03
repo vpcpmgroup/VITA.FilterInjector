@@ -80,7 +80,7 @@ jobs:
         
       - name: Pack unmanaged solution
         working-directory: solution
-        run: pac solution pack --zipfile ../artifacts/VITA.FilterInjector_unmanaged.zip --folder . --packagetype Unmanaged
+        run: pac solution pack --zipfile ../artifacts/VITA.FilterInjector_unmanaged.zip --folder ./src --packagetype Unmanaged
       
 
       - name: Upload artifact
