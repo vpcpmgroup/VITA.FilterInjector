@@ -1,0 +1,10 @@
+{
+  "name": "vita-filter-injector",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "build": "pcf-scripts build", "clean": "pcf-scripts clean" },
+  "devDependencies": {
+    "@types/powerapps-component-framework": "latest",
+    "pcf-scripts": "latest"
+  }
+}
