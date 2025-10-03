@@ -78,16 +78,6 @@ jobs:
         working-directory: solution
         run: pac solution add-reference --path ../VITA.FilterInjector.pcfproj
 
-      - name: Inspect solution/src
-        working-directory: solution
-        shell: pwsh
-        run: |
-          Write-Host "=== TREE: solution/src ==="
-          gci -r src | ft -a
-          Write-Host "`n=== HEAD: solution.xml ==="
-          Get-Content src/solution.xml -TotalCount 60 | Write-Host
-          Write-Host "`n=== HEAD: Other/Customizations.xml ==="
-          Get-Content src/Other/Customizations.xml -TotalCount 120 | Write-Host
 
         
       - name: Pack unmanaged solution
