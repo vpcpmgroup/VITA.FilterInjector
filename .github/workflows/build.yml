@@ -8,52 +8,54 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
+      # 1) Pull code
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2) Node 18 for PCF toolchain
       - name: Setup Node 18
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
+      # 3) Install PCF dev deps (inside the PCF folder)
       - name: Install dev deps (PCF)
-        working-directory: ./VITAFilterInjector
-        run: npm install --no-audit --no-fund
+        working-directory: VITAFilterInjector
+        run: npm install
 
-
+      # 4) Build PCF
       - name: Build PCF
-        working-directory: ./VITAFilterInjector
-        env:
-          ESLINT_USE_FLAT_CONFIG: "false"
+        working-directory: VITAFilterInjector
         run: npm run build
 
+      # 5) Install PAC (Power Platform CLI) via dotnet tool and put on PATH
       - name: Install PAC (robust)
         shell: pwsh
         run: |
-          $ErrorActionPreference = 'Stop'
           dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.48.2
           echo "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           pac help
-          
-      # 1) Init solution project (creates solution/ and *.cdsproj)
-      - name: Init solution (create cdsproj)
-        run: |
-          mkdir solution
-          cd solution
-          pac solution init --publisher-name VITA --publisher-prefix vp
-      
-      # 2) Add the PCF reference (run INSIDE solution folder)
+
+      # 6) Prepare output folder
+      - name: Create artifacts folder
+        run: mkdir artifacts
+
+      # 7) Create a Dataverse solution in ./solution (generated at build time)
+      - name: Init solution (in subfolder)
+        run: pac solution init --publisher-name VITA --publisher-prefix vp --outputDirectory solution
+
+      # 8) Add the PCF project into that solution
       - name: Add PCF reference
-        working-directory: ./solution
+        working-directory: solution
         run: pac solution add-reference --path ../VITAFilterInjector
-      
-      # 3) Pack unmanaged solution (run INSIDE solution folder)
+
+      # 9) Pack unmanaged solution ZIP from ./solution/src
       - name: Pack unmanaged solution
-        working-directory: ./solution
-        run: pac solution pack --zipfile ../artifacts/VITA.FilterInjector_unmanaged.zip --folder . --packagetype Unmanaged
+        run: pac solution pack --zipfile artifacts/VITA.FilterInjector_unmanaged.zip --folder solution/src --packagetype Unmanaged
 
-
+      # 10) Publish the ZIP as a pipeline artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
