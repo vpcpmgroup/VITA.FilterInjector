@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest>
-  <control namespace="VITA" constructor="VITAFilterInjector" version="1.0.0"
-           display-name-key="VITAFilterInjector" description-key="VITAFilterInjector description"
-           control-type="standard">
-    <feature-usage>
-      <uses-feature name="WebAPI" required="true" />
-      <commanding required="true" />
-    </feature-usage>
+  <control
+    namespace="VITA"
+    constructor="VITAFilterInjector"
+    version="1.0.0"
+    display-name-key="VITAFilterInjector"
+    description-key="VITAFilterInjector description"
+    control-type="standard">
+
+    <!-- At least one property keeps the schema happy; we don't actually use it -->
+    <property
+      name="dummy"
+      display-name-key="Dummy"
+      description-key="Dummy"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false" />
+
     <resources>
       <code path="index.ts" order="1" />
     </resources>
-    <permissions>
-      <privilege entity="environmentvariabledefinition" privilege="Read" />
-      <privilege entity="environmentvariablevalue" privilege="Read" />
-    </permissions>
+
   </control>
 </manifest>
