@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest>
-  <control
-    namespace="VITA"
-    constructor="VITAFilterInjector"
-    version="1.0.0"
-    display-name-key="VITAFilterInjector"
-    description-key="VITAFilterInjector description"
-    control-type="standard">
-
-    <!-- At least one property keeps the schema happy; we don't actually use it -->
-    <property
-      name="dummy"
-      display-name-key="Dummy"
-      description-key="Dummy"
-      of-type="SingleLine.Text"
-      usage="input"
-      required="false" />
-
+  <control namespace="VITA" constructor="VITAFilterInjector" version="0.0.1"
+           display-name-key="VITAFilterInjector" description-key="VITAFilterInjector description"
+           control-type="standard">
+    <data-set name="dataset" display-name-key="Dataset_Display_Key" />
     <resources>
       <code path="index.ts" order="1" />
     </resources>
-
   </control>
 </manifest>
