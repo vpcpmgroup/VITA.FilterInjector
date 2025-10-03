@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "ES6",
-    "lib": ["dom","es2015","es5"],
+    "target": "es5",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom"],
     "strict": true,
     "noImplicitAny": false,
-    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "declaration": false,
     "outDir": "out",
     "types": ["powerapps-component-framework"]
   },
-  "include": ["VITAFilterInjector"]
+  "include": ["VITAFilterInjector/**/*.ts"]
 }
