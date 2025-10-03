@@ -1,14 +1,14 @@
 {
- "devDependencies": {
-  "pcf-scripts": "latest",
-  "@types/powerapps-component-framework": "latest",
-  "typescript": "^5.4.0",
-  "eslint": "^8.57.0",
-  "@typescript-eslint/parser": "^6.21.0",
-  "@typescript-eslint/eslint-plugin": "^6.21.0"
-},
-   "scripts": {
+  "name": "vita-filter-injector",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
     "build": "pcf-scripts build --no-lint",
     "clean": "pcf-scripts clean"
+  },
+  "devDependencies": {
+    "@types/powerapps-component-framework": "latest",
+    "pcf-scripts": "latest",
+    "typescript": "~4.9.5"
   }
 }
