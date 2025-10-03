@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.PowerApps.MSBuild.Sdk/2.0.7">
+  <PropertyGroup>
+    <ControlNamespace>VITA</ControlNamespace>
+    <ControlName>VITAFilterInjector</ControlName>
+    <pcfprojGuid>{7A7F0E2C-1E8B-4C2C-95D7-6D4E3C7F9B9F}</pcfprojGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ControlManifest Include="VITAFilterInjector/ControlManifest.Input.xml" />
+    <TypeScriptSource Include="VITAFilterInjector/index.ts" />
+    <!-- Optional globs, harmless if folders don't exist -->
+    <Resx Include="VITAFilterInjector/strings/*.resx" />
+    <Css Include="VITAFilterInjector/css/**/*.*" />
+    <Image Include="VITAFilterInjector/img/**/*.*" />
+    <Html Include="VITAFilterInjector/**/*.html" />
+  </ItemGroup>
+</Project>
