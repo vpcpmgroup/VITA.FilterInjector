@@ -77,11 +77,11 @@ jobs:
       - name: Add PCF reference
         working-directory: solution
         run: pac solution add-reference --path ../VITA.FilterInjector.pcfproj
-
+        
       - name: Pack unmanaged solution
         working-directory: solution
-        run: pac solution pack --zipFilePath ../artifacts/VITA.FilterInjector_unmanaged.zip --processUnmanaged true
-
+        run: pac solution pack --zipfile ../artifacts/VITA.FilterInjector_unmanaged.zip --folder . --packagetype Unmanaged
+      
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
