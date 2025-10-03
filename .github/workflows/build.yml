@@ -20,7 +20,12 @@ jobs:
         run: npm install
 
       - name: Build PCF
-        run: npm run build
+        shell: pwsh
+        run: |
+          $env:ESLINT_USE_FLAT_CONFIG = "false"
+          npm install
+          npm run build
+
 
       - name: Install PAC (robust)
         shell: pwsh
