@@ -35,22 +35,24 @@ jobs:
           dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.48.2
           echo "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           pac help
-
-      - name: Init solution (clean)
-        shell: pwsh
+          
+      # 1) Init solution project (creates solution/ and *.cdsproj)
+      - name: Init solution (create cdsproj)
         run: |
-          if (Test-Path solution) { Remove-Item -Recurse -Force solution }
           mkdir solution
           cd solution
           pac solution init --publisher-name VITA --publisher-prefix vp
-
+      
+      # 2) Add the PCF reference (run INSIDE solution folder)
       - name: Add PCF reference
-        run: pac solution add-reference --path ./VITAFilterInjector
-
+        working-directory: ./solution
+        run: pac solution add-reference --path ../VITAFilterInjector
+      
+      # 3) Pack unmanaged solution (run INSIDE solution folder)
       - name: Pack unmanaged solution
-        run: |
-          mkdir artifacts
-          pac solution pack --zipfile artifacts/VITA.FilterInjector_unmanaged.zip --folder ./solution --packagetype Unmanaged
+        working-directory: ./solution
+        run: pac solution pack --zipfile ../artifacts/VITA.FilterInjector_unmanaged.zip --folder . --packagetype Unmanaged
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
